@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,16 +20,19 @@ import java.util.ArrayList;
 public class bill extends Activity {
 
     MyView mView;
+    SeekBar sbar;
 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.root);
 
+        sbar = (SeekBar)findViewById(R.id.seekBar);
+        sbar.setProgress(0);
+
         LinearLayout root = (LinearLayout)findViewById(R.id.root);
         mView = new MyView(this);
         root.addView(mView);
-
 
     }
 
@@ -37,6 +41,8 @@ public class bill extends Activity {
             return 1-input;
         }
     }
+
+
 
     class MyView extends View {
         Ball mBall;
@@ -98,6 +104,8 @@ public class bill extends Activity {
                                 tempY = tempY * tempY;
 
                                 mBall.pwr = (int)Math.sqrt(tempX+tempY);
+                                sbar.setProgress(mBall.pwr);
+
 
                                 arVertex.clear();
                                 Toast toast = Toast.makeText(bill.this,Integer.toString(mBall.pwr),Toast.LENGTH_LONG);
