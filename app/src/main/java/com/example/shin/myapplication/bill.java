@@ -104,6 +104,23 @@ public class bill extends Activity {
                                 tempY = tempY * tempY;
 
                                 mBall.pwr = (int)Math.sqrt(tempX+tempY);
+
+                                if(mBall.pwr <= 20)
+                                {
+                                    mBall.pwr = 20;
+                                }else if(mBall.pwr <= 40)
+                                {
+                                    mBall.pwr = 40;
+                                }else if(mBall.pwr <= 60)
+                                {
+                                    mBall.pwr = 60;
+                                }else  if(mBall.pwr <= 80)
+                                {
+                                    mBall.pwr = 80;
+                                }else if(mBall.pwr <=100)
+                                {
+                                    mBall.pwr = 100;
+                                }
                                 sbar.setProgress(mBall.pwr);
 
 
