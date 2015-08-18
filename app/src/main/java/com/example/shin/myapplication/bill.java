@@ -50,8 +50,9 @@ public class bill extends Activity {
         Ball mBall;
         ArrayList<Vertex> arVertex= new ArrayList<Vertex>();
         int mWidth, mHeight;
-        double fricAcc = -2;
+        int fricAcc = 2;
         Handler mHandler;
+        int vecPwr;
 
         public MyView(Context context){
             super(context);
@@ -76,25 +77,27 @@ public class bill extends Activity {
 
             mWidth = mView.getWidth();
             mHeight = mView.getHeight();
+            vecPwr = (int)Math.sqrt(mBall.getVecX()*mBall.getVecX() + mBall.getVecY()*mBall.getVecY());
 
 
             // 공 좌표 이동 계산
             if(mBall.getVecX() < 0)
             {
-                mBall.setX(mBall.getX() + (int)(mBall.getVecX() + (-fricAcc)));
-                mBall.setVecX((int)(mBall.getVecX() + (-fricAcc)));
+
+                mBall.setX(mBall.getX() + mBall.getVecX() - fricAcc*mBall.getVecX()/vecPwr);
+                mBall.setVecX(mBall.getVecX() - fricAcc*mBall.getVecX()/vecPwr);
             }else if(mBall.getVecX() > 0)
             {
-                mBall.setX(mBall.getX() + (int)(mBall.getVecX() + fricAcc));
-                mBall.setVecX((int) (mBall.getVecX() + fricAcc));
+                mBall.setX(mBall.getX() + mBall.getVecX() - fricAcc*mBall.getVecX()/vecPwr);
+                mBall.setVecX(mBall.getVecX() - fricAcc*mBall.getVecX()/vecPwr);
             }
 
             if (mBall.getVecY() < 0) {
-                mBall.setY(mBall.getY() + (int) (mBall.getVecY() + (-fricAcc)));
-                mBall.setVecY((int) (mBall.getVecY() + (-fricAcc)));
+                mBall.setY(mBall.getY() + mBall.getVecY() - fricAcc*mBall.getVecY()/vecPwr);
+                mBall.setVecY(mBall.getVecY() - fricAcc*mBall.getVecY()/vecPwr);
             }else if (mBall.getVecY() > 0) {
-                mBall.setY(mBall.getY() + (int)(mBall.getVecY() + fricAcc));
-                mBall.setVecY((int)(mBall.getVecY() + fricAcc));
+                mBall.setY(mBall.getY() + mBall.getVecY() - fricAcc*mBall.getVecY()/vecPwr);
+                mBall.setVecY(mBall.getVecY() - fricAcc*mBall.getVecY()/vecPwr);
             }
 
             // 공 반사각 계산
