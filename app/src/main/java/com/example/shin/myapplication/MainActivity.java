@@ -14,14 +14,12 @@ public class MainActivity extends AppCompatActivity {
     Button quit;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         start=(Button)findViewById(R.id.startbtn);
         quit=(Button)findViewById(R.id.quitbtn);
-
-
 
     }
 

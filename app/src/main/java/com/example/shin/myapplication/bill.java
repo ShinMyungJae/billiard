@@ -6,8 +6,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ public class bill extends Activity {
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.root);
 
         sbar = (SeekBar)findViewById(R.id.seekBar);
@@ -43,36 +46,95 @@ public class bill extends Activity {
     }
 
 
-
     class MyView extends View {
         Ball mBall;
         ArrayList<Vertex> arVertex= new ArrayList<Vertex>();
+        int mWidth, mHeight;
+        double fricAcc = -2;
+        Handler mHandler;
 
         public MyView(Context context){
             super(context);
             mBall = new Ball();
             mBall.setX(100);
             mBall.setY(50);
-            mBall.setRad(20);
+            mBall.setRad(50);
+            mHandler = new Handler();
         }
+        private Runnable r = new Runnable(){
+
+            public void run(){
+                invalidate();
+            }
+        };
+
+        protected void onDraw(Canvas canvas)
+        {
+            Paint pnt = new Paint();
+            pnt.setColor(mBall.getClr());
+            pnt.setAntiAlias(true);
+
+            mWidth = mView.getWidth();
+            mHeight = mView.getHeight();
+
+
+            // 공 좌표 이동 계산
+            if(mBall.getVecX() < 0)
+            {
+                mBall.setX(mBall.getX() + (int)(mBall.getVecX() + (-fricAcc)));
+                mBall.setVecX((int)(mBall.getVecX() + (-fricAcc)));
+            }else if(mBall.getVecX() > 0)
+            {
+                mBall.setX(mBall.getX() + (int)(mBall.getVecX() + fricAcc));
+                mBall.setVecX((int) (mBall.getVecX() + fricAcc));
+            }
+
+            if (mBall.getVecY() < 0) {
+                mBall.setY(mBall.getY() + (int) (mBall.getVecY() + (-fricAcc)));
+                mBall.setVecY((int) (mBall.getVecY() + (-fricAcc)));
+            }else if (mBall.getVecY() > 0) {
+                mBall.setY(mBall.getY() + (int)(mBall.getVecY() + fricAcc));
+                mBall.setVecY((int)(mBall.getVecY() + fricAcc));
+            }
+
+            // 공 반사각 계산
+
+            if(mBall.getX()+mBall.getRad() > mWidth || mBall.getX()-mBall.getRad() < 0)
+            {
+                mBall.vecX *= -1;
+            }
+            if(mBall.getY()+mBall.getRad() > mWidth || mBall.getY()-mBall.getRad() < 0)
+            {
+                mBall.vecY *= -1;
+            }
+
+
+            canvas.drawCircle(mBall.getX(),mBall.getY(),mBall.getRad(),pnt);
+            mHandler.postDelayed(r,100);
+        }
+
+        public void startAnim(TimeInterpolator inter)
+        {
+
+
+        }
+
 
         public boolean onTouchEvent(MotionEvent ev)
         {
             if(ev.getAction()==MotionEvent.ACTION_DOWN)
             {
 
-                if(mBall.getX()-20 <= ev.getX())
+                if(mBall.getX()-50 <= ev.getX())
                 {
-                    if(mBall.getX()+20 >= ev.getX())
+                    if(mBall.getX()+50 >= ev.getX())
                     {
-                        if(mBall.getY()-20 <= ev.getY())
+                        if(mBall.getY()-50 <= ev.getY())
                         {
-                            if(mBall.getY()+20 >= ev.getY())
+                            if(mBall.getY()+50 >= ev.getY())
                             {
                                 //공을 터치하고 움직인 경우
-                                arVertex.add(new Vertex(ev.getX(),ev.getY(),false));
-                                Toast tst = Toast.makeText(bill.this,"Ball Touch",Toast.LENGTH_LONG);
-                                tst.show();
+                                arVertex.add(new Vertex(ev.getX(), ev.getY(), false));
                             }
                         }
                     }
@@ -87,18 +149,21 @@ public class bill extends Activity {
                 arVertex.add(new Vertex(ev.getX(), ev.getY(), false));
 
 
-                if(arVertex.size() >=2 &&mBall.getX()-20 <= arVertex.get(arVertex.size()-2).x)
+                if(arVertex.size() >=2 &&mBall.getX()-50 <= arVertex.get(arVertex.size()-2).x)
                 {
-                    if(mBall.getX()+20 >= arVertex.get(arVertex.size()-2).x)
+                    if(mBall.getX()+50 >= arVertex.get(arVertex.size()-2).x)
                     {
-                        if(mBall.getY()-20 <= arVertex.get(arVertex.size()-2).y)
+                        if(mBall.getY()-50 <= arVertex.get(arVertex.size()-2).y)
                         {
-                            if(mBall.getY()+20 >= arVertex.get(arVertex.size()-2).y)
+                            if(mBall.getY()+50 >= arVertex.get(arVertex.size()-2).y)
                             {
                                 //공을 터치하고 움직인 경우
-
                                 float tempX = arVertex.get(arVertex.size()-2).x - arVertex.get(arVertex.size()-1).x;
                                 float tempY = arVertex.get(arVertex.size()-2).y - arVertex.get(arVertex.size()-1).y;
+
+                                //vector값 입력
+                                mBall.setVecX((int)tempX);
+                                mBall.setVecY((int)tempY);
 
                                 tempX = tempX * tempX;
                                 tempY = tempY * tempY;
@@ -122,12 +187,7 @@ public class bill extends Activity {
                                     mBall.pwr = 100;
                                 }
                                 sbar.setProgress(mBall.pwr);
-
-
                                 arVertex.clear();
-                                Toast toast = Toast.makeText(bill.this,Integer.toString(mBall.pwr),Toast.LENGTH_LONG);
-                                toast.show();
-
                             }
                         }
                     }
@@ -140,19 +200,6 @@ public class bill extends Activity {
             return false;
         }
 
-        public void startAnim(TimeInterpolator inter)
-        {
-
-        }
-
-
-        protected void onDraw(Canvas canvas)
-        {
-            Paint pnt = new Paint();
-            pnt.setColor(mBall.getClr());
-            pnt.setAntiAlias(true);
-            canvas.drawCircle(mBall.getX(),mBall.getY(),mBall.getRad(),pnt);
-        }
 
         public class Vertex {
             Vertex(float ax, float ay, boolean ad)

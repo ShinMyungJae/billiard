@@ -13,6 +13,7 @@ public class Ball {
     int rad;
     int clr = Color.BLACK;
     int pwr;
+    int vecX, vecY;
 
 
 
@@ -20,7 +21,7 @@ public class Ball {
     {
         x=0;
         y=0;
-        rad=20;
+        rad=50;
     }
 
     void setX(int ax){x=ax;}
@@ -28,9 +29,13 @@ public class Ball {
     void setRad(int arad){rad=arad;}
     void setClr(int aclr){clr=aclr;}
     void setPwr(int apwr){pwr=apwr;}
+    void setVecX(int aX){vecX=aX;}
+    void setVecY(int aY){vecY=aY;}
     int getX(){return x;}
     int getY(){return y;}
     int getClr(){return clr;}
     int getRad(){return rad;}
     int getPwr(){return pwr;}
+    int getVecX(){return vecX;}
+    int getVecY(){return vecY;}
 }
